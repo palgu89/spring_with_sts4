@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="CommentMapper">
+  	<insert id="reg" parameterType="cvo">
+  		insert into comment 
+  		(pno, writer, content)
+  		values 
+  		(#{pno}, #{writer}, #{content})
+  	</insert>
+  	<select id="list" resultType="cvo">
+  		select cno, writer, content, mod_at
+  		from comment where pno = #{pno}
+  	</select>
+  	<update id="mod" parameterType="cvo">
+  		update comment
+  		set content = #{content}, mod_at = now()
+  		where cno = #{cno}
+  	</update>
+  	<delete id="del" parameterType="long">
+  		delete from comment where cno = #{cno}
+  	</delete>
+  	<delete id="delAll" parameterType="long">
+  		delete from comment where pno = #{pno}
+  	</delete>
+  	<select id="getPno" parameterType="long" resultType="long">
+  		select pno from comment where cno = #{cno}
+  	</select>
+  </mapper>
