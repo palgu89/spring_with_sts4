@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- DAOImpl이 없어진 대신 namespace를 실제 경로로 지정해줘야 한다 -->
+  <mapper namespace="com.myweb.www.repository.BoardDAO">
+  	<insert id="insertBoard" parameterType="bvo">
+  		insert into board (title, writer, content)
+  		values (#{title}, #{writer}, #{content})
+  	</insert>
+  	<select id="selectListBoard" resultType="bvo">
+  		select bno, title, writer, mod_at, read_count 
+  		from board order by bno desc
+  	</select>
+  	<select id="selectOneBoard" parameterType="long" resultType="bvo">
+  		select * from board where bno = #{bno}
+  	</select>
+  	<update id="updateBoard" parameterType="bvo">
+  		update board set 
+  		title = #{title}, content = #{content}, mod_at = now()
+  		where bno = #{bno}
+  	</update>
+  	<delete id="deleteBoard" parameterType="long">
+  		delete from board where bno = #{bno}
+  	</delete>
+  	<!-- 페이지 구성할 sql -->
+  	<!-- where bno > 0은 그냥 참인 조건을 해놓은 것임 > 나중에 검색할 때 셋팅이 필요하므로 미리 해놨음 -->
+  	<!-- limit의 #{}부분은 변수 값을 가져오는게 아니라 pagingVO 객체의 getter값을 가져오는 것임 > pageStart -> getPageStart를 부르는 것임 -->
+  	<select id="selectListBoardPaging" parameterType="pgvo" resultType="bvo">
+  		select a.bno, title, writer, mod_at 
+  		from (
+  			select bno from board
+  			where bno > 0
+  			order by bno desc
+  			limit #{pageStart}, #{qty}
+  		) a left join board b
+  		on a.bno = b.bno
+  	</select>
+  	<!-- 원래는 long으로 내놔야 맞는데 우리가 int로 해서 int로 함 -->
+  	<select id="selectOneTotalCount" parameterType="pgvo" resultType="int">
+  		select count(bno) from board where bno > 0
+  	</select>
+  </mapper>
