@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.www.repository.BCommentDAO">
+	<insert id="insertBComment" parameterType="bcvo">
+		insert into b_comment (bno, writer, content)
+		values (#{bno}, #{writer}, #{content})
+	</insert>
+	<!-- dao에서 pgvo에 담겨 오기 때문에 pgvo.pageStart -->
+	<select id="selectListBComment" resultType="bcvo">
+		select a.cno, writer, content, mod_at
+		from (
+			select cno from b_comment
+			where bno = #{bno}
+			limit #{pgvo.pageStart}, #{pgvo.qty}
+		)a inner join b_comment b 
+		on a.cno = b.cno
+	</select>
+	<!--  paging 하려면 totalCount 알아야 하니까 추가 -->
+	<select id="selectOneBCommentTotalCount" resultType="int">
+		select count(cno) from b_comment where bno = #{bno}
+	</select>
+	<update id="updateBComment" parameterType="bcvo">
+		update b_comment
+		set content = #{content}, mod_at = now()
+		where cno = #{cno}
+	</update>
+	<delete id="deleteOneBComment" parameterType="long">
+		delete from b_comment where cno = #{cno}
+	</delete>
+	<delete id="deleteAllBComment" parameterType="long">
+		delete from b_comment where bno = #{bno}
+	</delete>
+	<select id="selectOneBno" parameterType="long" resultType="long">
+		select bno from b_comment where cno = #{cno}
+	</select>
+</mapper>

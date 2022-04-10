@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.www.repository.CommentDAO">
+	<insert id="insertComment" parameterType="cvo">
+		insert into comment (pno, writer, content)
+		values (#{pno}, #{writer}, #{content})
+	</insert>
+	<!-- 여기서 parameterType으로 long도 들어오고, pgvo도 들어와야하는데 여기선 못하니까 dao에서 @Param 써준 거임 -->
+	<select id="selectListComment" resultType="cvo">
+		select a.cno, writer, content, mod_at
+		from (
+			select cno from comment
+			where pno = #{pno}
+			limit #{pgvo.pageStart}, #{pgvo.qty}
+		) a left join comment b
+		on a.cno = b.cno 
+	</select>
+	<select id="selectOneCommentTotalCount" parameterType="long" resultType="int">
+		select count(cno) from comment where pno = #{pno}
+	</select>
+	<update id="updateComment" parameterType="cvo">
+		update comment
+		set content = #{content}, mod_at = now()
+		where cno = #{cno}
+	</update>
+	<delete id="deleteOneComment" parameterType="long">
+		delete from comment where cno = #{cno}
+	</delete>
+	<delete id="deleteAllComment" parameterType="long">
+		delete from comment where pno = #{pno}
+	</delete>
+	<select id="selectOneComment" parameterType="long" resultType="long">
+		select pno from comment where cno = #{cno}
+	</select>
+</mapper>

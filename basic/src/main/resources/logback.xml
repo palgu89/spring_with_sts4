@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration debug="true">
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d %5p [%c] %m%n</pattern>
+    </encoder>
+  </appender>
+  
+  <!-- log 파일로 저장하는 법 -->
+  <appender name="ROLLINGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+  	<file>/_javaweb/_java/logDir/myweb.log</file>
+  	<encoder>
+  		<pattern>%d %5p [%c] %m%n</pattern>
+  	</encoder>
+  	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+  		<fileNamePattern>WebLog_%d{yyyy-MM-dd}.zip</fileNamePattern>
+  		<maxHistory>30</maxHistory>
+  		<totalSizeCap>100MB</totalSizeCap>
+  	</rollingPolicy>
+  </appender>
+  <!-- file태그 안의 경로에 myWeb.log로 저장이 되고, 하루가 지나면 zip해서 저장 된다. 100MB가 넘어가면 -1 -2로 저장됨. 저장 기한은 30일 -->
+  
+  <logger name="com.myweb.www" level="debug" appender-ref="STDOUT"></logger>
+  <logger name="jdbc.sqlonly" level="info" appender-ref="STDOUT"></logger>
+  <logger name="jdbc.resultsettable" level="info" appender-ref="STDOUT"></logger>
+  <logger name="org.springframework" level="error" appender-ref="STDOUT"></logger>
+  <logger name="org.springframework.jdbc" level="error" appender-ref="STDOUT"></logger>
+
+  <root level="error">
+    <appender-ref ref="STDOUT" />
+    
+    <appender-ref ref="ROLLINGFILE" />
+    
+  </root>
+</configuration>
