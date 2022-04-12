@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.www.repository.MemberDAO">
+	<insert id="insertMember" parameterType="mvo">
+		insert into member (email, pwd, nick_name)
+		values (#{email}, #{pwd}, #{nickName})
+	</insert>
+	<select id="selectEmail" parameterType="string" resultType="mvo">
+		select * from member where email = #{email}
+	</select>
+	<insert id="insertAuthInit" parameterType="string">
+		insert into auth_member values (#{email}, 'ROLE_USER')
+	</insert>
+	<select id="selectAuths" parameterType="string" resultType="authVO">
+		select * from auth_member where email = #{email}
+	</select>
+	<update id="updateLastLogin" parameterType="string">
+		update member set last_login = now() where email = #{email}
+	</update>
+</mapper>
