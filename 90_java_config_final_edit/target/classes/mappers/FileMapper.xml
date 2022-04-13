@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myweb.www.repository.FileDAO">
+<sql id="cond">
+	from file where
+</sql>
+	<insert id="insertFile" parameterType="bfvo">
+		insert into file (uuid, save_dir, file_name, file_type, pno, file_size)
+		values (#{uuid}, #{saveDir}, #{fileName}, #{fileType}, #{pno}, #{fileSize})
+	</insert>
+	<select id="selectListFile" parameterType="long" resultType="bfvo">
+		select * <include refid="cond" /> pno = #{pno}
+	</select>
+	
+	<!-- update는 없다. 수정이 아니라 지워지고 새로 들어간다 -->
+	
+	<!-- 하나 지우는 sql -->
+	<delete id="deleteFile" parameterType="string">
+		delete <include refid="cond" /> uuid = #{uuid}
+	</delete>
+	<!-- 다 지우는 sql -->
+	<delete id="deleteAllFile" parameterType="long">
+		delete <include refid="cond" /> pno = #{pno}
+	</delete>
+	<select id="selectOnePno" parameterType="string" resultType="long">
+		select pno <include refid="cond" /> uuid = #{uuid}
+	</select>
+	<select id="selectOneFileCount" parameterType="long" resultType="int">
+		select count(uuid) <include refid="cond" /> pno = #{pno}
+	</select>
+</mapper>
